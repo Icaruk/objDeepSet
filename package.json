@@ -1,0 +1,36 @@
+{
+	"name": "objdeepset",
+	"version": "1.0.0",
+	"description": "Javascript immutable object deep setter",
+	"main": "index.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Icaruk/objDeepSet.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Icaruk/objDeepSet"
+	},
+	"homepage": "https://github.com/Icaruk",
+	"scripts": {
+		"test": "jest"
+	},
+	"keywords": [
+		"js",
+		"javascript",
+		"immutable",
+		"object",
+		"deep",
+		"set",
+		"setter",
+		"property"
+	],
+	"author": "Icaruk <adri-rk@hotmail.com>",
+	"license": "ISC",
+	"devDependencies": {
+		"jest": "^26.0.1"
+	},
+	"directories": {
+		"example": "examples",
+		"test": "tests"
+	}
+}
