@@ -33,33 +33,31 @@ const objSet = require("objDeepSet");
 
 ```js
 
-let obj = {
-	car: {
-		id: "V-1234-AB",
-		color: "Black",
-		wheels: {
-			"1": {
-				status: "ok"
-			},
-			"2". {
-				status: "ok"
+let car: {
+	id: "V-1234-AB",
+	color: "Black",
+	wheels: {
+		"1": {
+			status: "ok"
+		},
+		"2". {
+			status: "ok"
+		}
+		"3". {
+			status: "damaged",
+			damage: {
+				priority: 10,
+				description: "puncture",
+				needsReparation: true
 			}
-			"3". {
-				status: "damaged",
-				damage: {
-					priority: 10,
-					description: "puncture",
-					needsReparation: true
-				}
-			}
-			"4". {
-				status: "ok"
-			}
+		}
+		"4". {
+			status: "ok"
 		}
 	}
 }
 
-let newObj = objSet.v("car.wheels.3.damage.priority", 9);
+let newObj = objSet.v("wheels.3.damage.priority", 9);
 
 
 ```
