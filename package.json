@@ -1,6 +1,6 @@
 {
 	"name": "objdeepset",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Javascript immutable object deep setter",
 	"main": "index.js",
 	"repository": {

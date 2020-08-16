@@ -180,3 +180,50 @@ OUTPUT:
 ```
 
 
+
+<br>
+
+
+
+# 🌌 Redux implementation:
+
+your_reducer.js
+```js
+
+
+const userReducer = (
+	state = {},
+	action
+) => {
+	
+	switch (action.type) {
+		
+		case "USER_SET": {
+			
+			const {merge = true} = action.options ?? {};
+			
+			let newstate = objSet(state, action.key, action.value, {
+				merge,
+			});
+			
+			return newstate;
+		};
+		
+		default: return state;
+		
+	};
+		
+
+```
+
+
+How you dispatch that action
+```js
+
+// Login example
+dispatch({type: "USER_SET", key: "username", value: "Mike"});
+
+// Logout example
+dispatch({type: "USER_SET", key: "", value: {}, options: {merge: false} });
+
+```
