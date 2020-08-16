@@ -1,6 +1,6 @@
 {
 	"name": "objdeepset",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Javascript immutable object deep setter",
 	"main": "index.js",
 	"repository": {
@@ -26,11 +26,4 @@
 	],
 	"author": "Icaruk <adri-rk@hotmail.com>",
 	"license": "ISC",
-	"devDependencies": {
-		"jest": "^26.0.1"
-	},
-	"directories": {
-		"example": "examples",
-		"test": "tests"
-	}
 }
