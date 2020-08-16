@@ -1,38 +1,67 @@
 
+const _set = (options, ref, value) => {
+	
+	if (options.merge && value !== null && typeof value === "object") { 
+		ref = {...ref, ...value};
+
+	// Si es array hago spread para mergear ambos arrays
+	} else if (options.merge && Array.isArray(value)) {  // TODO sin testear
+		ref = [...ref, ...value];
+
+	// Establezco valor normalmente
+	} else {
+		ref = value;
+		
+	};
+	
+	
+	return ref;
+	
+};
+
+
+
 /**
- * Returns a modified object without mutating the original one.
+ * Returns a modified object with or without mutating the original one.
  * ___
  * 
- * @param {Object} obj - Original object. It will not be mutated.
- * @param {String | Array} key Key to be modified. Ejemplos: 
+ * @param {object} obj - Original object.
+ * @param {string | array} key Key that will be modified. Examples: 
  * 
  * - "user"
  * - "user.name"
  * - ["user", "name"]
+ * - "" (this will point to the root of the object)
  * 
- * @param {*} value - Value to be assigned to the specified key.
- * @param {Object} options Options:  
- * 
- * - merge (bool): Specifies if the new value gets merged with the old one, otherwise it will overwrite it. Default false.
- * - mutate (bool): Specifies if the original object is mutated. Default true.
+ * @param {*} value - Value that will be assigned to the specified key.
+ * @param {object} [options] - Options
+ * @param {boolean} [options.merge=false] - Default false. Merge (true) or replace (false) the object with the value.
+ * @param {boolean} [options.mutate=false] - Default false. Mutate (true) or clone (false) of the original object.
  * 
  * ___
- * @returns {Object} New modified object.
+ * 
+ * @returns {object} New object.
  * 
 */
 
-module.exports = (obj, key, value, options = {
+const objSet = (obj, key, value, options = {
 	merge: false,
-	mutate: true,
+	mutate: false,
 }) => {
 	
+	// Proceso keys
 	let arrKeys;
 	
 	if (typeof key === "string") arrKeys = key.split("."); // si me viene "user.name" → ["user", "name"]
 	if (Array.isArray(key)) arrKeys = [...key]; // si me viene array, lo clono
 	
 	
-	if (!arrKeys) return new Error("Key debe ser del tipo string o array.");
+	
+	// Compruebo errores
+	if (!arrKeys) return new Error("'Key' must be string or array.");
+	
+	const bl = ["constructor", "__proto__"];
+	if (arrKeys.some( _x => bl.includes(_x) )) return new Error("Error: 'constructor' and '__proto__' are not valid keys.");	
 	
 	
 	
@@ -41,14 +70,15 @@ module.exports = (obj, key, value, options = {
 	
 	
 	// Itero por las keys
-	let newObj = options.mutate ? obj : {...obj }; // clono (o no) el objeto original
+	let newObj = options.mutate ? obj : { ...obj }; // clono (o no) el objeto original
 	let ref = newObj;
 	
-	arrKeys.map(_x => {
-		
+	
+	
+	// Muevo la referencia del objeto hacia la profundidad indicada
+	arrKeys.forEach(_x => {
 		if (!ref[_x]) ref[_x] = {}; // si la referencia no contiene esa key, la creo como vacia
 		ref = ref[_x]; // cambio la refencia, a una más profunda
-		
 	});
 	
 	
@@ -63,121 +93,36 @@ module.exports = (obj, key, value, options = {
 			oldValue === null
 		)
 	) {
-		console.error(`
-			[objSet] ¡CUIDADO! el valor original y el nuevo son de tipos diferentes.
-			Key → ${key}
-			Valor antiguo → ${JSON.stringify(oldValue)}
-			Valor nuevo → ${JSON.stringify(value, null, 4)}
-		`);
+		// console.error(`[objSet] ¡CUIDADO! el valor original y el nuevo son de tipos diferentes. \nKey → ${key} \nValor antiguo → ${JSON.stringify(oldValue)} \nValor nuevo → ${JSON.stringify(value, null, 4)}`);
 	};
 	
 	
+	// let finalRef = (lastKey === "") ? ref = newObj : ref[lastKey];
+	
+	if (lastKey === "") {
+		return _set(options, newObj, value);
+	};
+	
+	
+	
 	// Si es obj hago spread para mergear ambos objetos
-	if (options.merge && typeof value === "object") { 
+	if (options.merge && value !== null && typeof value === "object") { 
 		ref[lastKey] = {...ref[lastKey], ...value};
 	
 	// Si es array hago spread para mergear ambos arrays
-	} else if (options.merge && typeof value === "array") {  // TODO sin testear
+	} else if (options.merge && Array.isArray(value)) {  // TODO sin testear
 		ref[lastKey] = [...ref[lastKey], ...value];
 	
 	// Establezco valor normalmente
-	} else { 
+	} else {
 		ref[lastKey] = value;
+		
 	};
 	
 	
 	return newObj;
-
+	
 };
 
-
-
-/*
-	// Ejemplo 1:
-
-	let obj = {
-		a: "soy a",
-		b: {
-			"c1": "soy c1",
-			"c2": {
-				"d1": "soy d1"
-			}
-		}
-		
-	};
-	
-	let newObj = objSet(obj, "b.c1", "BIEEEEN");
-	
-	
-	// valor newObj:
-	{
-		a: 'soy a',
-		b: {
-			c1: 'BIEEEEN',
-			c2: {
-				d1: 'soy d1'
-			}
-		}
-	}
-	
-*/
-
-/*
-	// Ejemplo 2:
-
-	let fGas = {};
-	
-	
-	let newObj = objSet(fGas, "direccionSuministro.tipo", "cups");
-	
-	newObj = objSet(newObj, "direccionSuministro", {
-		nombre: "Pepe", 
-		apellido: "Gomez"
-	}, {
-		merge: false
-	});
-	
-	newObj = objSet(newObj, "direccionSuministro.apellido", "Martínez");
-	
-	
-	// valor newObj:
-	{
-		direccionSuministro: {
-			tipo: 'cups',
-			nombre: 'Pepe',
-			apellido: 'Martínez'
-		}
-	}
-*/	
-
-/*
-	// Ejemplo 3:
-	//! ¡Cuidado!
-	// Si una propiedad inicialmente NO es un objeto, y se le asigna un objeto como nuevo valor
-	// se hará spread de ambos ocurriendo lo siguiente:
-	
-	let fGas = {
-		datos: "hola",
-	};
-	
-	
-	let newObj = objSet(fGas, "datos", {
-		nombre: "Pepe", 
-		apellido: "Gomez"
-	});
-	
-	
-	// valor newObj:
-	{
-		datos: {
-			'0': 'h',
-			'1': 'o',
-			'2': 'l',
-			'3': 'a',
-			nombre: 'Pepe',
-			apellido: 'Gomez'
-		}
-	}
-*/
-
+module.exports = objSet;
 
