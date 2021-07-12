@@ -5,6 +5,11 @@
 
 
 
+[![install size](https://packagephobia.com/badge?p=objdeepset)](https://packagephobia.com/result?p=objdeepset)
+[![dependency count](https://badgen.net/bundlephobia/dependency-count/objdeepset)](https://badgen.net/bundlephobia/dependency-count/objdeepset)
+
+
+
 **objDeepSet** is a javascript **immutable object deep setter**.
 
 - 🚀 Lightweight.
@@ -29,7 +34,38 @@ const objDeepSet = require("objDeepSet");
 
 
 
-# 🔮Basic examples:
+# 🧭 Usage:
+
+```js
+
+objDeepSet(object, key, value, options);
+
+```
+
+- **object** (object)
+	The original object you want to modify. It will be cloned internally unless you set `mutate: true` on options.
+- **key** (string | array)
+	Key that will be modified. Examples:
+	- `"user"`
+	- `"user.name"`
+	- `["user", "name"]`
+	- `""` (this will point to the root of the object)
+- **options** (object)
+	- merge (boolean)
+		Default false. Merge (true) or replace (false) the object with the value.
+	- mutate (boolean)
+		Default false. Mutate (true) or clone (false) the original object.
+
+
+**Returns** The new or modified object.
+
+
+
+<br>
+
+
+
+# 🔮 Examples:
 
 ```js
 
@@ -57,48 +93,16 @@ let car: {
 	}
 }
 
-let newObj = objDeepSet("wheels.3.damage.priority", 9);
+let newObj = objDeepSet(car, "wheels.3.damage.priority", 9);
 
 
 ```
-
-
-<br>
-
-
-
-# 🧭 Usage:
-
-```js
-
-objDeepSet(object, key, value, options);
-
-```
-
-- **object** (object)
-	The original object you want to modify. It will be cloned internally unless you set "mutate: true" on options.
-- **key** (string | array)
-	Key that will be modified. Examples:
-	- "user"
-	- "user.name"
-	- ["user", "name"]
-	- "" (this will point to the root of the object)
-- **options** (object)
-	- merge (boolean)
-		Default false. Merge (true) or replace (false) the object with the value.
-	- mutate (boolean)
-		Default false. Mutate (true) or clone (false) the original object.
-
-
-**Returns** The new or modified object.
 
 
 
 <br>
 
 
-
-# 🧭 Advanced examples:
 
 ```js
 
